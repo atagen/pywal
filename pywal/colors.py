@@ -104,15 +104,15 @@ def saturate_colors(colors, amount):
     return colors
 
 
-def cache_fname(img, backend, light, cache_dir, sat=""):
+def cache_fname(img, backend, light, cache_dir, sat="", br=""):
     """Create the cache file name."""
     color_type = "light" if light else "dark"
     file_name = re.sub("[/|\\|.]", "_", img)
     file_size = os.path.getsize(img)
 
     file_parts = [file_name, color_type, backend,
-                  sat, file_size, __cache_version__]
-    return [cache_dir, "schemes", "%s_%s_%s_%s_%s_%s.json" % (*file_parts,)]
+                  sat, br, file_size, __cache_version__]
+    return [cache_dir, "schemes", "%s_%s_%s_%s_%s_%s_%s.json" % (*file_parts,)]
 
 
 def get_backend(backend):
@@ -142,7 +142,7 @@ def palette():
 def get(img, light=False, backend="wal", cache_dir=CACHE_DIR, sat="", br=""):
     """Generate a palette."""
     # home_dylan_img_jpg_backend_1.2.2.json
-    cache_name = cache_fname(img, backend, light, cache_dir, sat)
+    cache_name = cache_fname(img, backend, light, cache_dir, sat, br)
     cache_file = os.path.join(*cache_name)
 
     if os.path.isfile(cache_file):
