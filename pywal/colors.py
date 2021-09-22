@@ -81,6 +81,19 @@ def generic_adjust(colors, light):
     return colors
 
 
+def brighten_colors(colors, amount):
+    """Adjust brightness of all colors."""
+    if amount and float(amount) <= 1.0 and float(amount) >= 0.0:
+        for i, _ in enumerate(colors):
+            if i not in [0, 7, 8, 15]:
+                colors[i] = util.lighten_color(colors[i], float(amount))
+    elif amount and float(amount) >= -1.0 and float(amount) <= 0.0:
+        for i, _ in enumerate(colors):
+            if i not in [0, 7, 8, 15]:
+                colors[i] = util.darken_color(colors[i], -float(amount))
+
+    return colors
+
 def saturate_colors(colors, amount):
     """Saturate all colors."""
     if amount and float(amount) <= 1.0:
@@ -126,7 +139,7 @@ def palette():
     print("\n")
 
 
-def get(img, light=False, backend="wal", cache_dir=CACHE_DIR, sat=""):
+def get(img, light=False, backend="wal", cache_dir=CACHE_DIR, sat="", br=""):
     """Generate a palette."""
     # home_dylan_img_jpg_backend_1.2.2.json
     cache_name = cache_fname(img, backend, light, cache_dir, sat)
@@ -152,7 +165,7 @@ def get(img, light=False, backend="wal", cache_dir=CACHE_DIR, sat=""):
         logging.info("Using %s backend.", backend)
         backend = sys.modules["pywal.backends.%s" % backend]
         colors = getattr(backend, "get")(img, light)
-        colors = colors_to_dict(saturate_colors(colors, sat), img)
+        colors = colors_to_dict(brighten_colors(saturate_colors(colors, sat), br), img)
 
         util.save_file_json(colors, cache_file)
         logging.info("Generation complete.")

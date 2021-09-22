@@ -61,6 +61,9 @@ def get_args():
     arg.add_argument("--saturate", metavar="0.0-1.0",
                      help="Set the color saturation.")
 
+    arg.add_argument("--brightness", metavar="-1.0-1.0",
+                     help="Set the color brightness.")
+
     arg.add_argument("--preview", action="store_true",
                      help="Print the current color palette.")
 
@@ -176,7 +179,7 @@ def parse_args(parser):
         image_file = image.get(args.i, iterative=args.iterative,
                                recursive=args.recursive)
         colors_plain = colors.get(image_file, args.l, args.backend,
-                                  sat=args.saturate)
+                                  sat=args.saturate, br=args.brightness)
 
     if args.theme:
         colors_plain = theme.file(args.theme, args.l)
@@ -187,7 +190,7 @@ def parse_args(parser):
     if args.w:
         cached_wallpaper = util.read_file(os.path.join(CACHE_DIR, "wal"))
         colors_plain = colors.get(cached_wallpaper[0], args.l, args.backend,
-                                  sat=args.saturate)
+                                  sat=args.saturate, br=args.brightness)
 
     if args.b:
         args.b = "#%s" % (args.b.strip("#"))
